@@ -5,8 +5,10 @@ RUN set -ex; \
     apk update; \
     apk add --no-cache git
 
+RUN go get github.com/stretchr/testify
+
 # Set working directory
-MKDIR /project
+RUN mkdir /project
 ADD . /project
 WORKDIR /project
 
