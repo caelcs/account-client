@@ -1,6 +1,8 @@
 package accounts
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -26,4 +28,19 @@ type Attributes struct {
 	Account_classification   string `json:"account_classification"`
 	Join_account             bool   `json:"join_account"`
 	Account_matching_opt_out bool   `json:"account_matching_opt_out"`
+}
+
+func (cli DefaultAccountsClient) executeRequest(request http.Request, result interface{}) error {
+	resp, err := cli.httpClient.Do(&request)
+
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	err = json.Unmarshal(body, &result)
+	return err
 }

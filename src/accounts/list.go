@@ -1,8 +1,6 @@
 package accounts
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -17,19 +15,9 @@ func (cli DefaultAccountsClient) List() (Account, error) {
 
 	req.Header.Set("Accept", "application/vnd.api+json")
 
-	resp, err := cli.httpClient.Do(req)
-
-	if err != nil {
-		return Account{}, err
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-
-	var accounts Account
-	err = json.Unmarshal(body, &accounts)
-	return accounts, err
+	result := Account{}
+	errors := cli.executeRequest(*req, result)
+	return result, errors
 }
 
 type AccountDetail struct {
